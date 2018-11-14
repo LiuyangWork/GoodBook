@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            function jsFinish()
+            {
+                document.getElementById("field2").value=document.getElementById("field1").value;
+            }
+        
+            function test()
+            {
+                alert(1);
+                window.webkit.messageHandlers.jsTest.postMessage(null);
+            }
+        </script>
+    </head>
+    <body>
+        
+        Field1: <input type="text" id="field1" value="Hello World!"><br>
+            Field2: <input type="text" id="field2"><br><br>
+                
+                <button onclick="jsFinish()">复制文本</button>
+                
+                <button onclick="test()">交互</button>
+                
+                
+    </body>
+</html>
