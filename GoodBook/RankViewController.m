@@ -31,7 +31,7 @@ extern NSInteger CellHeight;
 
 @implementation RankViewController
 
-- (instancetype)init {
+- (instancetype)init { 
     self = [super init];
     
     if (self) {
