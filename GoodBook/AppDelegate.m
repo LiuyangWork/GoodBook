@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <FlutterPluginRegistrant/GeneratedPluginRegistrant.h>
 
 @interface AppDelegate ()
 
@@ -38,6 +39,10 @@ void handleException(NSException *ex) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    //flutter
+    self.flutterEngine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+    [self.flutterEngine runWithEntrypoint:nil];
+    [GeneratedPluginRegistrant registerWithRegistry:self.flutterEngine];
     
    //设置捕捉异常的回调
     NSSetUncaughtExceptionHandler(handleException);
@@ -163,8 +168,7 @@ void handleException(NSException *ex) {
 //    }];
 
     
-    
-    return YES;
+    return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 

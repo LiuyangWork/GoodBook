@@ -14,6 +14,8 @@
 #import "helloViewController.h"
 #import "worldViewController.h"
 #import "MineViewController.h"
+#import <FlutterPluginRegistrant/GeneratedPluginRegistrant.h>
+#import "AppDelegate.h"
 
 @interface NewTarBarController () <NewTabBarDelegate> {
     RankViewController *_vc1;
@@ -29,12 +31,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    FlutterEngine *flutterEngine = [(AppDelegate *)[[UIApplication sharedApplication] delegate] flutterEngine];
+    FlutterViewController *_vcFlutter = [[FlutterViewController alloc] initWithEngine:flutterEngine nibName:@"" bundle:nil];
+    _vcFlutter.tabBarItem = [[UITabBarItem alloc]initWithTitle:@"更多" image:[UIImage imageNamed:@"more"] selectedImage:[UIImage imageNamed:@"more_red"]];
+    
+//    [_vcFlutter setInitialRoute:@"/test"];
+    
+    if (IsIphoneX) {
+        [_vcFlutter.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -25)];
+        [_vcFlutter.tabBarItem setImageInsets:UIEdgeInsetsMake(-12, 0, 12, 0)];
+    }
+    
     _vc1 = [RankViewController new];
     _vc2 = [rootViewController new];
     _vc3 = [worldViewController new];
     _vc4 = [MineViewController new];
     
-    self.viewControllers = @[_vc1,_vc2,_vc3,_vc4];
+    self.viewControllers = @[_vc1,_vc2,_vcFlutter,_vc4];
     // Do any additional setup after loading the view.
     
     //@property(nonatomic,readonly) UITabBar *tabBar
