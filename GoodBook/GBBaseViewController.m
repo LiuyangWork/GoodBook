@@ -33,6 +33,11 @@
     
     [self.view addSubview:self.mainWebView];
     
+    //    native调用js方法
+    //    [self.mainWebView evaluateJavaScript:@"jsTest" completionHandler:^(id _Nullable ret, NSError * _Nullable error) {
+    //
+    //    }];
+    
     [self.mainWebView addObserver:self forKeyPath:NSStringFromSelector(@selector(estimatedProgress)) options:NSKeyValueObservingOptionNew context:nil];
 }
 
@@ -63,9 +68,9 @@
 - (void)loadRequest:(NSString *)urlStr{
     if (self.url) {
         //加载url
-//        NSURL *url = [NSURL URLWithString:urlStr];
-//        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-//        [self.mainWebView loadRequest:request];
+        //        NSURL *url = [NSURL URLWithString:urlStr];
+        //        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        //        [self.mainWebView loadRequest:request];
         
         //加载本地html
         [self.mainWebView loadHTMLString:urlStr baseURL:nil];
@@ -113,6 +118,21 @@
     NSLog(@"fail");
 }
 
+//
+- (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView API_AVAILABLE(macosx(10.11), ios(9.0)) {
+    
+}
+
+//https证书自定义处理, 不一定百分百会回调
+- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler {
+    
+}
+
+//- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+//
+//}
+
+
 #pragma mark - WKUIDelegate
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     NSLog(@"js call alert");
@@ -128,7 +148,7 @@
     completionHandler(prompt);
 }
 
-#pragma mark - WKScriptMessageHandler
+#pragma mark - WKScriptMessageHandler  js调用native方法的回调
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     NSLog(@"%@_%@_%@", message.name, message.body, message.frameInfo);
 }
@@ -148,7 +168,7 @@
         _mainWebView.UIDelegate = self;
         _mainWebView.allowsBackForwardNavigationGestures = YES;
         
-//        WKBackForwardList *list = [_mainWebView backForwardList];
+        //        WKBackForwardList *list = [_mainWebView backForwardList];
     }
     return _mainWebView;
 }
@@ -157,7 +177,8 @@
     if (!_userContentController) {
         _userContentController = [[WKUserContentController alloc] init];
         
-        //注册一个name为jsTest的js方法
+        //注册一个name为jsTest的js方法，实现WKScriptMessageHandler协议
+        //js调用window.webkit.messageHandlers.jsTest.postMessage('body');
         [_userContentController addScriptMessageHandler:self name:@"jsTest"];
     }
     return _userContentController;
@@ -166,13 +187,13 @@
 
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
