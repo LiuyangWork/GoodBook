@@ -13,9 +13,14 @@
 #import "RankViewModel.h"
 #import "RankTableViewDelegate.h"
 #import "GBBaseViewController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVPlayerViewController.h>
+#import "MIFIPlayerViewController.h"
 
+NSString *kDataCache = @"kDataCache";
+NSString *NetDataPath = @"NetData";
 
-@interface RankViewController () <CALayerDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, UITableViewDelegate> {
+@interface RankViewController () <CALayerDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, UITableViewDelegate, AVPlayerViewControllerDelegate> {
 }
 
 @property(nonatomic,copy)UIImageView *imgView;
@@ -24,6 +29,11 @@
 @property (nonatomic, strong) RankViewModel *rankViewModel;
 @property (nonatomic, strong) RankTableViewDelegate *rankTableViewDelegate;
 @property (nonatomic, strong) RankVC2 *VC;
+
+@property (nonatomic, strong) AVPlayer *avPlayer; //播放器
+@property (nonatomic, strong) AVPlayerItem *currentPlayerItem;
+
+@property (nonatomic, strong) AVPlayerViewController *avPlayerVC;
 
 @end
 
@@ -56,17 +66,6 @@ extern NSInteger CellHeight;
     
     [self initUI];
     
-
-    
-    
-//    UIButton *btn2 = [[UIButton alloc] initWithFrame:CGRectMake(80, 100, 50, 50)];
-//    [btn2 setTitle:@"SD" forState:UIControlStateNormal];
-//    btn2.backgroundColor = [UIColor grayColor];
-//    [btn2 addTarget:self action:@selector(downloadImage) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:btn2];
-    
-    
-    
 //    [self prepareUI];
     
     //调用js
@@ -76,16 +75,111 @@ extern NSInteger CellHeight;
 //    [self testImage];
     
     
-//    NSCache *ca = [[NSCache alloc] init];
-//    [ca setObject:@"hello" forKey:@"kkk"];
-//
-//    [ca objectForKey:@"kkk"];
     
-//    MD5
-//    NSLog(@"md5: %@", [self md5:@"hello"]);
-   
-    
+}
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    
+}
+
+//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    [self.view endEditing:YES];
+//
+//    NSURL *url = [NSURL URLWithString:@"JumpTest://hello"];
+//    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+//        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+//    }
+//
+//    return;
+//
+//    UIViewController *vc = [[UIViewController alloc] init];
+//    vc.view.backgroundColor = [UIColor yellowColor];
+//
+//    [self.navigationController pushViewController:vc animated:YES];
+//
+//
+//
+//    /*
+//    NSURL *imgUrl = [NSURL URLWithString:@"https://user.daojia.com/user/getImgcode?mobile=13000000000"];
+//
+////    [self.imgView sd_setImageWithURL:imgUrl placeholderImage:nil options:SDWebImageRefreshCached];
+//
+//    NSData *data = [NSData dataWithContentsOfURL:imgUrl];
+//    [self.imgView setImage:[UIImage imageWithData:data]];
+//
+//    //请求数据
+//    [self headerRefreshAction];*/
+//
+//
+//    self.VC = [[RankVC2 alloc] init];
+////    self.VC.view.backgroundColor = [UIColor blueColor];
+//
+//    //1.
+////    [self addChildViewController:self.VC];
+////    [self.view addSubview:self.VC.view];
+////
+////    [self.VC didMoveToParentViewController:self];
+//
+//    //2.
+//    NSArray *aa = self.navigationController.viewControllers;
+//
+//    UIBarButtonItem *leftBtnItem = [[UIBarButtonItem alloc] initWithTitle:@"返回去" style:UIBarButtonItemStyleDone target:self action:@selector(reBack)];
+//
+//    self.navigationItem.leftBarButtonItem = leftBtnItem;
+//
+//    self.navigationController.navigationItem.rightBarButtonItem = leftBtnItem;
+//    self.navigationItem.title = @"next";
+//    self.navigationController.navigationItem.title = @"nexxx";
+//    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"headIcon"]];
+//
+//    self.navigationController.navigationBar.backgroundColor = [UIColor yellowColor];
+//
+////    self.navigationController.navigationBar.barStyle = UIStatusBarStyleLightContent;
+//
+//    self.extendedLayoutIncludesOpaqueBars = YES;
+//    self.navigationController.navigationBar.translucent = YES;
+//    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+//
+//
+////    [self.navigationController pushViewController:self.VC animated:YES];
+//
+//    //3.
+//    [self presentViewController:self.VC animated:YES completion:nil];
+//
+//
+//}
+
+- (NSString *)dictionaryToJsonString:(NSDictionary *)dict{
+    NSString *str;
+    NSError  *error;
+//    NSJSONWritingPrettyPrinted 包含换行符
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    if (!error) {
+        str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    
+    return str;
+}
+- (NSString *)arrayToJsonString:(NSArray *)array{
+    NSString *str;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:0 error:&error];
+    
+    if (!error) {
+        str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    
+    return str;
 }
 
 - (void)initUI {
@@ -103,7 +197,34 @@ extern NSInteger CellHeight;
     btn2.backgroundColor = [UIColor grayColor];
     [btn2 addTarget:self action:@selector(transition) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn2];
+    
+    UIButton *btnAV = [[UIButton alloc] initWithFrame:CGRectMake(200, SafeAreaTopHeight, 100, 50)];
+    [btnAV setTitle:@"AV" forState:UIControlStateNormal];
+    btnAV.backgroundColor = [UIColor grayColor];
+    [btnAV addTarget:self action:@selector(avPlay) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btnAV];
 }
+
+
+
+- (void)avPlay {
+    NSArray *urls = @[@"http://58.222.46.85/cdnsrc.v.cctv.com/flash/mp4video6/TMS/2011/01/05/cf752b1c12ce452b3040cab2f90bc265_h264818000nero_aac32-1.mp4"];
+    
+    MIFIPlayerViewController *playVC = [[MIFIPlayerViewController alloc] initWithUrls:urls currentIndex:0];
+    
+    [self presentViewController:playVC animated:YES completion:nil];
+    
+}
+
+//- (AVPlayerViewController *)avPlayerVC {
+//    if (!_avPlayerVC) {
+//        _avPlayerVC = [[AVPlayerViewController alloc] init];
+//        _avPlayerVC.view.frame = self.view.frame;
+//        _avPlayerVC.delegate = self;
+//        _avPlayerVC.player = self.avPlayer;
+//    }
+//    return _avPlayerVC;
+//}
 
 - (void)transition {
     self.VC = [[RankVC2 alloc] init];
@@ -144,7 +265,7 @@ extern NSInteger CellHeight;
 
 - (void)prepareUI {
     FLAnimatedImageView *gifImageView = [[FLAnimatedImageView alloc] init];
-    FLAnimatedImage *image = [UIImage gifImageNamedFromBundle:@"Loading.gif"];
+    FLAnimatedImage *image = (FLAnimatedImage *)[UIImage gifImageNamedFromBundle:@"Loading.gif"];
     gifImageView.animatedImage = image;
     
     UIImage *post = [UIImage imageWithCGImage:image.posterImage.CGImage scale:[UIScreen mainScreen].scale orientation:image.posterImage.imageOrientation];
@@ -377,92 +498,11 @@ extern NSInteger CellHeight;
     NSLog(@"***protectionspace:%@", challenge.protectionSpace);
 }
 
-#pragma mark - life cycle
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self.view endEditing:YES];
-    
-    NSURL *url = [NSURL URLWithString:@"JumpTest://hello"];
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-    }
-    
-    return;
-    
-    UIViewController *vc = [[UIViewController alloc] init];
-    vc.view.backgroundColor = [UIColor yellowColor];
-    
-    [self.navigationController pushViewController:vc animated:YES];
-    
-    
-    
-    /*
-    NSURL *imgUrl = [NSURL URLWithString:@"https://user.daojia.com/user/getImgcode?mobile=13000000000"];
-    
-//    [self.imgView sd_setImageWithURL:imgUrl placeholderImage:nil options:SDWebImageRefreshCached];
-    
-    NSData *data = [NSData dataWithContentsOfURL:imgUrl];
-    [self.imgView setImage:[UIImage imageWithData:data]];
-    
-    //请求数据
-    [self headerRefreshAction];*/
-    
-    
-    self.VC = [[RankVC2 alloc] init];
-//    self.VC.view.backgroundColor = [UIColor blueColor];
-    
-    //1.
-//    [self addChildViewController:self.VC];
-//    [self.view addSubview:self.VC.view];
-//
-//    [self.VC didMoveToParentViewController:self];
-    
-    //2.
-    NSArray *aa = self.navigationController.viewControllers;
-    
-    UIBarButtonItem *leftBtnItem = [[UIBarButtonItem alloc] initWithTitle:@"返回去" style:UIBarButtonItemStyleDone target:self action:@selector(reBack)];
-    
-    self.navigationItem.leftBarButtonItem = leftBtnItem;
-    
-    self.navigationController.navigationItem.rightBarButtonItem = leftBtnItem;
-    self.navigationItem.title = @"next";
-    self.navigationController.navigationItem.title = @"nexxx";
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"headIcon"]];
-    
-    self.navigationController.navigationBar.backgroundColor = [UIColor yellowColor];
-    
-//    self.navigationController.navigationBar.barStyle = UIStatusBarStyleLightContent;
-    
-    self.extendedLayoutIncludesOpaqueBars = YES;
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
-
-    
-//    [self.navigationController pushViewController:self.VC animated:YES];
-    
-    //3.
-    [self presentViewController:self.VC animated:YES completion:nil];
-   
-   
-}
-
 - (void)reBack {
     NSLog(@"reback");
 }
 
-#pragma mark rankTableView refresh
+#pragma mark - rankTableView refresh
 - (void)headerRefreshAction {
     [self.rankViewModel headerRefreshRequestWithCallBacl:^(NSArray *array) {
         [self.rankTableView.mj_header endRefreshing];
@@ -483,7 +523,14 @@ extern NSInteger CellHeight;
     }];
 }
 
-#pragma mark lazy load
+#pragma mark - lazy load
+
+//- (AVPlayer *)avPlayer {
+//    if (!_avPlayer) {
+//        _avPlayer = [a]
+//    }
+//}
+
 - (UITableView *)rankTableView {
     if (!_rankTableView) {
         _rankTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight + 50, screenWidth, 500) style:UITableViewStylePlain];

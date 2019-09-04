@@ -38,13 +38,14 @@
     //
     //    }];
     
+    //添加监听进度条的观察者
     [self.mainWebView addObserver:self forKeyPath:NSStringFromSelector(@selector(estimatedProgress)) options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self loadRequest:self.url];
+    [self loadRequest];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -52,28 +53,33 @@
     
     //不remove会造成内存泄漏
     [self.userContentController removeScriptMessageHandlerForName:@"jsTest"];
+    
+    [self.mainWebView removeObserver:self forKeyPath:NSStringFromSelector(@selector(estimatedProgress))];
 }
 
 - (void)dealloc {
     NSLog(@"GBBaseViewController dealloc");
 }
 
+//kvo
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    
+    //进度条
     if ([keyPath isEqualToString:NSStringFromSelector(@selector(estimatedProgress))]) {
         NSLog(@"pregress_%f", self.mainWebView.estimatedProgress);
     }
 }
 
 #pragma mark - custom function
-- (void)loadRequest:(NSString *)urlStr{
+- (void)loadRequest {
     if (self.url) {
         //加载url
-        //        NSURL *url = [NSURL URLWithString:urlStr];
+        //        NSURL *url = [NSURL URLWithString:self.url];
         //        NSURLRequest *request = [NSURLRequest requestWithURL:url];
         //        [self.mainWebView loadRequest:request];
         
         //加载本地html
-        [self.mainWebView loadHTMLString:urlStr baseURL:nil];
+        [self.mainWebView loadHTMLString:self.url baseURL:nil];
     }
 }
 

@@ -64,7 +64,7 @@ DEPENDENCIES:
   - SDWebImage/WebP
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AFNetworking
     - FLAnimatedImage
     - libwebp
@@ -83,7 +83,7 @@ SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  FlutterPluginRegistrant: 5f33f54e5f25444620ff39f2bdee4262d673ec7b
+  FlutterPluginRegistrant: 4c0b13ad4054e1b568c31c51cc95aee917e73920
   libwebp: 0f01098c6c17175391af621b2f14150f3ca16e16
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
@@ -92,4 +92,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 24c4ab371df532c28f2678f1d34d043c4744fa6c
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.0

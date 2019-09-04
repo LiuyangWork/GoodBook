@@ -48,6 +48,7 @@
 		CDDAEECB1F21DF240089FAE6 /* TransitionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDDAEECA1F21DF240089FAE6 /* TransitionManager.m */; };
 		CDDAEECE1F21E6190089FAE6 /* RankVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = CDDAEECD1F21E6190089FAE6 /* RankVC2.m */; };
 		CDDAEED41F23741D0089FAE6 /* RankTransitionAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = CDDAEED31F23741D0089FAE6 /* RankTransitionAnimation.m */; };
+		CDE34DE4231D3CD700FC2B34 /* MIFIPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE34DE3231D3CD700FC2B34 /* MIFIPlayerViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,6 +132,8 @@
 		CDDAEECD1F21E6190089FAE6 /* RankVC2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankVC2.m; sourceTree = "<group>"; };
 		CDDAEED21F23741D0089FAE6 /* RankTransitionAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RankTransitionAnimation.h; sourceTree = "<group>"; };
 		CDDAEED31F23741D0089FAE6 /* RankTransitionAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankTransitionAnimation.m; sourceTree = "<group>"; };
+		CDE34DE2231D3CD700FC2B34 /* MIFIPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MIFIPlayerViewController.h; sourceTree = "<group>"; };
+		CDE34DE3231D3CD700FC2B34 /* MIFIPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MIFIPlayerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,8 @@
 				CDCA502D1EE8DDAE00AA7783 /* RankViewController.m */,
 				CDDAEECC1F21E6190089FAE6 /* RankVC2.h */,
 				CDDAEECD1F21E6190089FAE6 /* RankVC2.m */,
+				CDE34DE2231D3CD700FC2B34 /* MIFIPlayerViewController.h */,
+				CDE34DE3231D3CD700FC2B34 /* MIFIPlayerViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -553,7 +558,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed\n\nosascript -e 'tell app \"Terminal\"\ndo script \"cd /Users/liuyang/Documents/mifi_ui&&flutter attach -d d3e3275190095db949b90fb0164866f5b5970b70\"\nend tell'\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed\n\n#osascript -e 'tell app \"Terminal\"\n#do script \"cd /Users/liuyang/Documents/mifi_ui&&flutter attach -d d3e3275190095db949b90fb0164866f5b5970b70\"\n#end tell'\n";
 		};
 		D4AE5FC2299EDA5619A82A7D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -598,6 +603,7 @@
 				CDCA502E1EE8DDAE00AA7783 /* RankViewController.m in Sources */,
 				568BE5C120158B1700AA822E /* UserModel.m in Sources */,
 				CDB7C9581EE2BEEE00F3913D /* AppDelegate.m in Sources */,
+				CDE34DE4231D3CD700FC2B34 /* MIFIPlayerViewController.m in Sources */,
 				56E22C481F5514D10096D633 /* worldViewController.m in Sources */,
 				CD504D431EE400D3004C5C9E /* NewViewController.m in Sources */,
 				CDA68E3F1F1226110065DBAA /* NewTabBar.m in Sources */,
@@ -746,7 +752,7 @@
 					"\"$PODS_CONFIGURATION_BUILD_DIR/ProgressHUD\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.xiaomi.jr.wkweb;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.whu.GoodBook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -768,7 +774,7 @@
 					"\"$PODS_CONFIGURATION_BUILD_DIR/ProgressHUD\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.xiaomi.jr.wkweb;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.whu.GoodBook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
